@@ -20,32 +20,36 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="分享 java&#x2F;spring&#x2F;springboot&#x2F;springcloud 技术">
-<meta property="og:type" content="website">
-<meta property="og:title" content="空夜&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="ArrayList 是最常用的 List 实现类，今天我们从源码角度来分析一下这个类。 一、基本结构首先，我们来看一下 ArrayList 的继承关系，这是一个 UML 图：  对于 ArrayList，我们通常是这样使用的： 1List&lt;Object&gt; list &#x3D; new ArrayList&lt;&gt;();    下面我们简单看一下接口概要： 12345public clas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArrayList 源码分析">
+<meta property="og:url" content="http://yoursite.com/2020/01/24/01-ArrayList/index.html">
 <meta property="og:site_name" content="空夜&#39;s Blog">
-<meta property="og:description" content="分享 java&#x2F;spring&#x2F;springboot&#x2F;springcloud 技术">
+<meta property="og:description" content="ArrayList 是最常用的 List 实现类，今天我们从源码角度来分析一下这个类。 一、基本结构首先，我们来看一下 ArrayList 的继承关系，这是一个 UML 图：  对于 ArrayList，我们通常是这样使用的： 1List&lt;Object&gt; list &#x3D; new ArrayList&lt;&gt;();    下面我们简单看一下接口概要： 12345public clas">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/2020/01/24/01-ArrayList/01-ArrayList.assets/image-20200122145110292.png">
+<meta property="article:published_time" content="2020-01-24T10:24:57.685Z">
+<meta property="article:modified_time" content="2020-03-15T03:19:36.931Z">
 <meta property="article:author" content="eknown">
 <meta property="article:tag" content="java ">
 <meta property="article:tag" content="spring ">
 <meta property="article:tag" content="springcloud">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/01/24/01-ArrayList/01-ArrayList.assets/image-20200122145110292.png">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2020/01/24/01-ArrayList/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false
+    isHome : false,
+    isPost : true
   };
 </script>
 
-  <title>空夜's Blog</title>
+  <title>ArrayList 源码分析 | 空夜's Blog</title>
   
 
 
@@ -146,80 +150,10 @@
             
 
   <div class="posts-expand">
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/14/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="eknown">
-      <meta itemprop="description" content="分享 java/spring/springboot/springcloud 技术">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="空夜's Blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/14/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-03-14 22:55:34" itemprop="dateCreated datePublished" datetime="2020-03-14T22:55:34+08:00">2020-03-14</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
       
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
   
   
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/24/01-ArrayList/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -233,8 +167,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/24/01-ArrayList/" class="post-title-link" itemprop="url">ArrayList 源码分析</a>
+          ArrayList 源码分析
         </h1>
 
         <div class="post-meta">
@@ -265,7 +198,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>ArrayList 是最常用的 List 实现类，今天我们从源码角度来分析一下这个类。</p>
+        <p>ArrayList 是最常用的 List 实现类，今天我们从源码角度来分析一下这个类。</p>
 <h2 id="一、基本结构"><a href="#一、基本结构" class="headerlink" title="一、基本结构"></a>一、基本结构</h2><p>首先，我们来看一下 ArrayList 的继承关系，这是一个 UML 图：</p>
 <p><img src="01-ArrayList.assets/image-20200122145110292.png" alt="image-20200122145110292"></p>
 <p>对于 ArrayList，我们通常是这样使用的：</p>
@@ -619,24 +552,33 @@
 <p><a href="https://www.cnblogs.com/skywang12345/p/3308556.html" target="_blank" rel="noopener">ArrayList 详细介绍 —— skywang12345</a></p>
 <p><a href="https://juejin.im/post/5e14b51d5188253a9a213e83" target="_blank" rel="noopener">《吊打面试官》系列 - ArrayList —— 敖丙</a></p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/14/hello-world/" rel="next" title="Hello World">
+      Hello World <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
+    
   </article>
   
   
   
 
   </div>
-
-  
-
 
 
           </div>
@@ -687,6 +629,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、基本结构"><span class="nav-number">1.</span> <span class="nav-text">一、基本结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、属性"><span class="nav-number">2.</span> <span class="nav-text">二、属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、三个构造器"><span class="nav-number">3.</span> <span class="nav-text">三、三个构造器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、扩容机制"><span class="nav-number">4.</span> <span class="nav-text">四、扩容机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-为什么要扩容？"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 为什么要扩容？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-扩容的实现"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 扩容的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-何时扩容"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 何时扩容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、数组底层方法"><span class="nav-number">5.</span> <span class="nav-text">五、数组底层方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Arrays-copyOf-方法"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 Arrays.copyOf 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-System-arraycopy-方法"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 System.arraycopy 方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、一个问题"><span class="nav-number">6.</span> <span class="nav-text">六、一个问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、常用方法"><span class="nav-number">7.</span> <span class="nav-text">七、常用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-基本"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 基本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-toArray"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 toArray</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-get-set-remove"><span class="nav-number">7.3.</span> <span class="nav-text">7.3 get&#x2F;set&#x2F;remove</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-4-集合关联操作"><span class="nav-number">7.4.</span> <span class="nav-text">7.4 集合关联操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-5-迭代器"><span class="nav-number">7.5.</span> <span class="nav-text">7.5 迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-6-subList"><span class="nav-number">7.6.</span> <span class="nav-text">7.6 subList</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#八、总结"><span class="nav-number">8.</span> <span class="nav-text">八、总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
