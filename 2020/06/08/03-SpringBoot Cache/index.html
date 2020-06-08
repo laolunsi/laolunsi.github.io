@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本节介绍 SpringBoot 中的三种缓存技术：Spring 自带的 Spring Cache、Layering Cache 框架、Alibaba JetCache 框架。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot Cache 技术实战">
+<meta property="og:url" content="http://yoursite.com/2020/06/08/03-SpringBoot%20Cache/index.html">
+<meta property="og:site_name" content="空夜&#39;s Blog">
+<meta property="og:description" content="本节介绍 SpringBoot 中的三种缓存技术：Spring 自带的 Spring Cache、Layering Cache 框架、Alibaba JetCache 框架。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-08T15:46:57.002Z">
+<meta property="article:modified_time" content="2020-06-08T15:48:11.977Z">
+<meta property="article:author" content="eknown">
+<meta property="article:tag" content="java ">
+<meta property="article:tag" content="spring ">
+<meta property="article:tag" content="springcloud">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/08/03-SpringBoot Cache/"/>
+
+
+
+
+
+  <title>SpringBoot Cache 技术实战 | 空夜's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ec66ae5634d881676d66c21fdc6147a1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">空夜's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">welcome my site.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/08/03-SpringBoot%20Cache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="eknown">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="空夜's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SpringBoot Cache 技术实战</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-08T23:46:57+08:00">
+                2020-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/06/08/03-SpringBoot%20Cache/" class="leancloud_visitors" data-flag-title="SpringBoot Cache 技术实战">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  本节介绍 SpringBoot 中的三种缓存技术：Spring 自带的 Spring Cache、Layering Cache 框架、Alibaba JetCache 框架。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>引言</p>
+<pre><code>前两天在写一个实时数据处理的项目，项目要求是 1s 要处理掉 1k 的数据，这时候显然光靠查数据库是不行的，技术选型的时候老大跟我提了一下使用 Layering-Cache 这个开源项目来做缓存框架。
+
+之间问了一下身边的小伙伴，似乎对这块了解不多。一般也就用用 Redis 来缓存，应该是很少用多级缓存框架来专门性的管理缓存吧。
+
+趁着这个机会，我多了解了一些关于 SpringBoot 中缓存的相关技术，于是有了这篇文章！</code></pre><hr>
+<p>在项目性能需求比较高时，就不能单单依赖数据库访问来获取数据了，必须引入缓存技术。</p>
+<p>常用的有本地缓存、Redis 缓存。</p>
+<ul>
+<li>本地缓存：也就是内存，速度快，缺点是不能持久化，一旦项目关闭，数据就会丢失。而且不能满足分布式系统的应用场景（比如数据不一致的问题）。</li>
+<li>Redis 缓存：也就是利用数据库等，最常见的就是 Redis。Redis 的访问速度同样很快，可以设置过期时间、设置持久化方法。缺点是会受到网络和并发访问的影响。</li>
+</ul>
+<p>本节介绍三种缓存技术：<strong>Spring Cache</strong>、<strong>Layering Cache</strong> 框架、<strong>Alibaba JetCache</strong> 框架。示例使用的 SpringBoot 版本是 2.1.3.RELEASE。非 SpringBoot 项目请参考文章中给出的文档地址。</p>
+<p>项目源码地址：<a href="https://github.com/laolunsi/spring-boot-examples" target="_blank" rel="noopener">https://github.com/laolunsi/spring-boot-examples</a></p>
+<hr>
+<h2 id="一、Spring-Cache"><a href="#一、Spring-Cache" class="headerlink" title="一、Spring Cache"></a>一、Spring Cache</h2><p>Spring Cache 是 Spring 自带的缓存方案，使用简单，既可以使用本地缓存，也可以使用 Redis</p>
+<p>CacheType 包括: </p>
+<blockquote>
+<p>GENERIC, JCACHE, EHCACHE, HAZELCAST, INFINISPAN, COUCHBASE, REDIS, CAFFEINE, SIMPLE, NONE</p>
+</blockquote>
+<p>Spring Cache 的使用很简单，引入 <code>即可，我这里使用创建的是一个 web 项目，引入的 `spring-boot-starter-web` 包含了</code>。</p>
+<p>这里利用 Redis 做缓存，再引入 <code>spring-boot-starter-data-redis</code> 依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--Redis--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>在配置类 or Application 类上添加 @EnableCaching 注解以启动缓存功能。</p>
+<p>配置文件很简洁（功能也比较少）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8081</span></span><br><span class="line">  <span class="attr">servlet:</span></span><br><span class="line">    <span class="attr">context-path:</span> <span class="string">/api</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cache:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">redis</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">6379</span></span><br><span class="line">    <span class="attr">database:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>下面我们编写一个对 User 进行增删改查的 Controller，实现对 User 的 save/delete/findAll 三个操作。为演示方便，DAO 层不接入数据库，而是使用 HashMap 来直接模拟数据库操作。</p>
+<p>我们直接看 service 层的接口实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDAO userDAO;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@Cacheable</span>(value = <span class="string">"user"</span>, key = <span class="string">"#userId"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">findById</span><span class="params">(Integer userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.findById(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@CachePut</span>(value = <span class="string">"user"</span>, key = <span class="string">"#user.id"</span>, condition = <span class="string">"#user.id != null"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">save</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        user.setUpdateTime(<span class="keyword">new</span> Date());</span><br><span class="line">        userDAO.save(user);</span><br><span class="line">        <span class="keyword">return</span> userDAO.findById(user.getId());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@CacheEvict</span>(value = <span class="string">"user"</span>, key = <span class="string">"#userId"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteById</span><span class="params">(Integer userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.deleteById(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">findAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.findAll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>我们可以看到使用了 @Cacheable、@CachePut、@CacheEvict 注解。</p>
+<ul>
+<li>Cacheable：启用缓存，首先从缓存中查找数据，如果存在，则从缓存读取数据；如果不存在，则执行方法，并将方法返回值添加到缓存</li>
+<li>@CachePut：更新缓存，如果 condition 计算结果为 true，则将方法返回值添加到缓存中</li>
+<li>@CacheEvict：删除缓存，根据 value 与 key 字段计算缓存地址，将缓存数据删除</li>
+</ul>
+<p>测试发现默认的对象存到 Redis 后是 binary 类型，我们可以通过修改 RedisCacheConfiguration 中的序列化规则去调整。比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisConfig</span> <span class="keyword">extends</span> <span class="title">CachingConfigurerSupport</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisCacheConfiguration <span class="title">redisCacheConfiguration</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Jackson2JsonRedisSerializer&lt;Object&gt; jackson2JsonRedisSerializer = <span class="keyword">new</span> Jackson2JsonRedisSerializer&lt;&gt;(Object<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig();</span><br><span class="line">        configuration = configuration.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer)).entryTtl(Duration.ofDays(<span class="number">30</span>));</span><br><span class="line">        <span class="keyword">return</span> configuration;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>Spring Cache 的功能比较单一，例如不能实现缓存刷新、二级缓存等功能。下面介绍一个开源项目：Layering-Cache，该项目实现了缓存刷新、二级缓存（一级内存、二级 Redis）。同时较容易扩展实现为自己的缓存框架。</p>
+<h2 id="二、Layering-Cache-框架"><a href="#二、Layering-Cache-框架" class="headerlink" title="二、Layering Cache 框架"></a>二、Layering Cache 框架</h2><p>文档：<a href="https://github.com/xiaolyuh/layering-cache/wiki/文档" target="_blank" rel="noopener">https://github.com/xiaolyuh/layering-cache/wiki/文档</a></p>
+<p>引入依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.xiaolyuh<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>layering-cache-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.7<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>配置文件不需要做什么修改。启动类依然加上 @EnableCaching 注解。</p>
+<p>然后需要配置一下 RedisTemplate：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableCaching</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisConfig</span> <span class="keyword">extends</span> <span class="title">CachingConfigurerSupport</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisTemplate <span class="title">redisTemplate</span><span class="params">(RedisConnectionFactory redisConnectionFactory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> createRedisTemplate(redisConnectionFactory);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisTemplate <span class="title">createRedisTemplate</span><span class="params">(RedisConnectionFactory redisConnectionFactory)</span> </span>&#123;</span><br><span class="line">        RedisTemplate&lt;String, Object&gt; redisTemplate = <span class="keyword">new</span> RedisTemplate&lt;&gt;();</span><br><span class="line">        redisTemplate.setConnectionFactory(redisConnectionFactory);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用Jackson2JsonRedisSerialize 替换默认序列化</span></span><br><span class="line">        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = <span class="keyword">new</span> Jackson2JsonRedisSerializer(Object<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">        ObjectMapper objectMapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);</span><br><span class="line">        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);</span><br><span class="line"></span><br><span class="line">        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置value的序列化规则和 key的序列化规则</span></span><br><span class="line">        redisTemplate.setKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line">        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        <span class="comment">//Map</span></span><br><span class="line">        redisTemplate.setHashKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line">        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        redisTemplate.afterPropertiesSet();</span><br><span class="line">        <span class="keyword">return</span> redisTemplate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>下面我们使用 layering 包中的 @Cacheable @CachePut @CatchEvict 三个注解来替换 Spring Cache 的默认注解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDAO userDAO;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">//@Cacheable(value = "user", key = "#userId")</span></span><br><span class="line">    <span class="meta">@Cacheable</span>(value = <span class="string">"user"</span>, key = <span class="string">"#userId"</span>,</span><br><span class="line">        firstCache = <span class="meta">@FirstCache</span>(expireTime = <span class="number">5</span>, timeUnit = TimeUnit.MINUTES),</span><br><span class="line">        secondaryCache = <span class="meta">@SecondaryCache</span>(expireTime = <span class="number">10</span>, preloadTime = <span class="number">3</span>, forceRefresh = <span class="keyword">true</span>, isAllowNullValue = <span class="keyword">true</span>, timeUnit = TimeUnit.MINUTES))</span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">findById</span><span class="params">(Integer userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.findById(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">//@CachePut(value = "user", key = "#user.id", condition = "#user.id != null")</span></span><br><span class="line">    <span class="meta">@CachePut</span>(value = <span class="string">"user"</span>, key = <span class="string">"#user.id"</span>,</span><br><span class="line">            firstCache = <span class="meta">@FirstCache</span>(expireTime = <span class="number">5</span>, timeUnit = TimeUnit.MINUTES),</span><br><span class="line">            secondaryCache = <span class="meta">@SecondaryCache</span>(expireTime = <span class="number">10</span>, preloadTime = <span class="number">3</span>, forceRefresh = <span class="keyword">true</span>, isAllowNullValue = <span class="keyword">true</span>, timeUnit = TimeUnit.MINUTES))</span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">save</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        user.setUpdateTime(<span class="keyword">new</span> Date());</span><br><span class="line">        userDAO.save(user);</span><br><span class="line">        <span class="keyword">return</span> userDAO.findById(user.getId());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="comment">//@CacheEvict(value = "user", key = "#userId")</span></span><br><span class="line">    <span class="meta">@CacheEvict</span>(value = <span class="string">"user"</span>, key = <span class="string">"#userId"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteById</span><span class="params">(Integer userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.deleteById(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">findAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.findAll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<hr>
+<h2 id="三、Alibaba-JetCache-框架"><a href="#三、Alibaba-JetCache-框架" class="headerlink" title="三、Alibaba JetCache 框架"></a>三、Alibaba JetCache 框架</h2><p>文档：<a href="https://github.com/alibaba/jetcache/wiki/Home_CN" target="_blank" rel="noopener">https://github.com/alibaba/jetcache/wiki/Home_CN</a></p>
+<blockquote>
+<p>JetCache是一个基于Java的缓存系统封装，提供统一的API和注解来简化缓存的使用。 JetCache提供了比SpringCache更加强大的注解，可以原生的支持TTL、两级缓存、分布式自动刷新，还提供了<code>Cache</code>接口用于手工缓存操作。 当前有四个实现，<code>RedisCache</code>、<code>TairCache</code>（此部分未在github开源）、<code>CaffeineCache</code>(in memory)和一个简易的<code>LinkedHashMapCache</code>(in memory)，要添加新的实现也是非常简单的。</p>
+<p>全部特性:</p>
+<ul>
+<li>通过统一的API访问Cache系统</li>
+<li>通过注解实现声明式的方法缓存，支持TTL和两级缓存</li>
+<li>通过注解创建并配置<code>Cache</code>实例</li>
+<li>针对所有<code>Cache</code>实例和方法缓存的自动统计</li>
+<li>Key的生成策略和Value的序列化策略是可以配置的</li>
+<li>分布式缓存自动刷新，分布式锁 (2.2+)</li>
+<li>异步Cache API (2.2+，使用Redis的lettuce客户端时)</li>
+<li>Spring Boot支持</li>
+</ul>
+</blockquote>
+<p>SpringBoot 项目中，引入如下依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alicp.jetcache<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jetcache-starter-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.14<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8083</span></span><br><span class="line">  <span class="attr">servlet:</span></span><br><span class="line">    <span class="attr">context-path:</span> <span class="string">/api</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jetcache:</span></span><br><span class="line">  <span class="attr">statIntervalMinutes:</span> <span class="number">15</span></span><br><span class="line">  <span class="attr">areaInCacheName:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">local:</span></span><br><span class="line">    <span class="attr">default:</span></span><br><span class="line">      <span class="attr">type:</span> <span class="string">caffeine</span></span><br><span class="line">      <span class="attr">keyConvertor:</span> <span class="string">fastjson</span></span><br><span class="line">  <span class="attr">remote:</span></span><br><span class="line">    <span class="attr">default:</span></span><br><span class="line">      <span class="attr">expireAfterWriteInMillis:</span> <span class="number">86400000</span> <span class="comment"># 全局，默认超时时间，单位毫秒，这里设置了 24 小时</span></span><br><span class="line">      <span class="attr">type:</span> <span class="string">redis</span></span><br><span class="line">      <span class="attr">keyConvertor:</span> <span class="string">fastjson</span></span><br><span class="line">      <span class="attr">valueEncoder:</span> <span class="string">java</span> <span class="comment">#jsonValueEncoder #java</span></span><br><span class="line">      <span class="attr">valueDecoder:</span> <span class="string">java</span> <span class="comment">#jsonValueDecoder</span></span><br><span class="line">      <span class="attr">poolConfig:</span></span><br><span class="line">        <span class="attr">minIdle:</span> <span class="number">5</span></span><br><span class="line">        <span class="attr">maxIdle:</span> <span class="number">20</span></span><br><span class="line">        <span class="attr">maxTotal:</span> <span class="number">50</span></span><br><span class="line">      <span class="attr">host:</span> <span class="string">$&#123;redis.host&#125;</span></span><br><span class="line">      <span class="attr">port:</span> <span class="string">$&#123;redis.port&#125;</span></span><br><span class="line">      <span class="attr">database:</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">6379</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>Application.class</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableMethodCache</span>(basePackages = <span class="string">"com.example.springcachealibaba"</span>)</span><br><span class="line"><span class="meta">@EnableCreateCacheAnnotation</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringCacheAlibabaApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(SpringCacheAlibabaApplication<span class="class">.<span class="keyword">class</span>, <span class="title">args</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>字如其意，<code>@EnableMethodCache</code> 用于注解开启方法上的缓存功能，<code>@EnableCreateCacheAnnotation</code> 用于注解开启 <code>@CreateCache</code> 来引入 Cache Bean 的功能。两套可以同时启用。</p>
+<p>这里以上面对 User 的增删改查功能为例：</p>
+<hr>
+<h3 id="3-1-通过-CreateCache-创建-Cache-实例"><a href="#3-1-通过-CreateCache-创建-Cache-实例" class="headerlink" title="3.1 通过 @CreateCache 创建 Cache 实例"></a>3.1 通过 @CreateCache 创建 Cache 实例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 下面的示例为使用 @CreateCache 注解创建 Cache 对象来缓存数据的示例</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@CreateCache</span>(name = <span class="string">"user:"</span>, expire = <span class="number">5</span>, timeUnit = TimeUnit.MINUTES)</span><br><span class="line">    <span class="keyword">private</span> Cache&lt;Integer, User&gt; userCache;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDAO userDAO;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">findById</span><span class="params">(Integer userId)</span> </span>&#123;</span><br><span class="line">        User user = userCache.get(userId);</span><br><span class="line">        <span class="keyword">if</span> (user == <span class="keyword">null</span> || user.getId() == <span class="keyword">null</span>) &#123;</span><br><span class="line">            user = userDAO.findById(userId);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">save</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        user.setUpdateTime(<span class="keyword">new</span> Date());</span><br><span class="line">        userDAO.save(user);</span><br><span class="line">        user = userDAO.findById(user.getId());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// cache</span></span><br><span class="line">        userCache.put(user.getId(), user);</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteById</span><span class="params">(Integer userId)</span> </span>&#123;</span><br><span class="line">        userCache.remove(userId);</span><br><span class="line">        <span class="keyword">return</span> userDAO.deleteById(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">findAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.findAll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h3 id="3-2-通过注解实现方法缓存"><a href="#3-2-通过注解实现方法缓存" class="headerlink" title="3.2 通过注解实现方法缓存"></a>3.2 通过注解实现方法缓存</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 下面为使用 AOP 来缓存数据的示例</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDAO userDAO;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserService userService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@Cached</span>(name = <span class="string">"user:"</span>, key = <span class="string">"#userId"</span>, expire = <span class="number">1000</span>)</span><br><span class="line">    <span class="comment">//@Cached( name = "user:", key = "#userId", serialPolicy = "bean:jsonPolicy")</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">findById</span><span class="params">(Integer userId)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"userId: "</span> + userId);</span><br><span class="line">        <span class="keyword">return</span> userDAO.findById(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@CacheUpdate</span>(name = <span class="string">"user:"</span>, key = <span class="string">"#user.id"</span>, value = <span class="string">"#user"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">save</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        user.setUpdateTime(<span class="keyword">new</span> Date());</span><br><span class="line">        <span class="keyword">boolean</span> res = userDAO.save(user);</span><br><span class="line">        <span class="keyword">if</span> (res) &#123;</span><br><span class="line">            <span class="keyword">return</span> userService.findById(user.getId());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@CacheInvalidate</span>(name = <span class="string">"user:"</span>, key = <span class="string">"#userId"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteById</span><span class="params">(Integer userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.deleteById(userId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">findAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userDAO.findAll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这里用到了三个注解：@Cached/@CacheUpdate/@CacheInvalidate，分别对应着 Spring Cache 中的 @Cacheable/@CachePut/@CacheEvict</p>
+<p>具体含义可以参考：<a href="https://github.com/alibaba/jetcache/wiki/MethodCache_CN" target="_blank" rel="noopener">https://github.com/alibaba/jetcache/wiki/MethodCache_CN</a></p>
+<h3 id="3-3-自定义序列化器"><a href="#3-3-自定义序列化器" class="headerlink" title="3.3 自定义序列化器"></a>3.3 自定义序列化器</h3><p>默认的 value 存储格式是 binary 的，JetCache 提供的 Redis key 和 value 的序列化器仅有 java 和 kryo 两种。可以通过自定义序列化器来实现自己想要的序列化方式，比如 json。</p>
+<p>JetCache 开发者提出：</p>
+<blockquote>
+<p>jetcache老版本中是有三个序列化器的：java、kryo、fastjson。 但是fastjson做序列化兼容性不是特别好，并且某次升级以后单元测试就无法通过了，怕大家用了以后觉得有坑，就把它废弃了。 现在默认的序列化器是性能最差，但是兼容性最好，大家也最熟悉的java序列化器。</p>
+</blockquote>
+<p>参考原仓库中 FAQ 中的建议，可以通过两种方式来定义自己的序列化器。</p>
+<h4 id="3-3-1-实现-SerialPolicy-接口"><a href="#3-3-1-实现-SerialPolicy-接口" class="headerlink" title="3.3.1 实现 SerialPolicy 接口"></a>3.3.1 实现 SerialPolicy 接口</h4><p>第一种方式是定义一个 SerialPolicy 的实现类，然后将其注册成一个 bean，然后在 @Cached 中的 serialPolicy 属性中指明 <code>bean:name</code></p>
+<p>比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSONObject;</span><br><span class="line"><span class="keyword">import</span> com.alicp.jetcache.CacheValueHolder;</span><br><span class="line"><span class="keyword">import</span> com.alicp.jetcache.anno.SerialPolicy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.function.Function;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JsonSerialPolicy</span> <span class="keyword">implements</span> <span class="title">SerialPolicy</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Function&lt;Object, <span class="keyword">byte</span>[]&gt; encoder() &#123;</span><br><span class="line">        <span class="keyword">return</span>  o -&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (o != <span class="keyword">null</span>) &#123;</span><br><span class="line">                CacheValueHolder cacheValueHolder = (CacheValueHolder) o;</span><br><span class="line">                Object realObj = cacheValueHolder.getValue();</span><br><span class="line">                String objClassName = realObj.getClass().getName();</span><br><span class="line">                <span class="comment">// 为防止出现 Value 无法强转成指定类型对象的异常，这里生成一个 JsonCacheObject 对象，保存目标对象的类型（比如 User）</span></span><br><span class="line">                JsonCacheObject jsonCacheObject = <span class="keyword">new</span> JsonCacheObject(objClassName, realObj);</span><br><span class="line">                cacheValueHolder.setValue(jsonCacheObject);</span><br><span class="line">                <span class="keyword">return</span> JSONObject.toJSONString(cacheValueHolder).getBytes();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">0</span>];</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Function&lt;<span class="keyword">byte</span>[], Object&gt; decoder() &#123;</span><br><span class="line">        <span class="keyword">return</span> bytes -&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (bytes != <span class="keyword">null</span>) &#123;</span><br><span class="line">                String str = <span class="keyword">new</span> String(bytes);</span><br><span class="line">                CacheValueHolder cacheValueHolder = JSONObject.parseObject(str, CacheValueHolder<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">                JSONObject jsonObject = JSONObject.parseObject(str);</span><br><span class="line">                <span class="comment">// 首先要解析出 JsonCacheObject，然后获取到其中的 realObj 及其类型</span></span><br><span class="line">                JSONObject jsonOfMy = jsonObject.getJSONObject(<span class="string">"value"</span>);</span><br><span class="line">                <span class="keyword">if</span> (jsonOfMy != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    JSONObject realObjOfJson = jsonOfMy.getJSONObject(<span class="string">"realObj"</span>);</span><br><span class="line">                    String className = jsonOfMy.getString(<span class="string">"className"</span>);</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        Object realObj = realObjOfJson.toJavaObject(Class.forName(className));</span><br><span class="line">                        cacheValueHolder.setValue(realObj);</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> cacheValueHolder;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意，在 JetCache 的源码中，我们看到实际被缓存的对象的 CacheValueHolder，这个对象包括了一个泛型字段 V，这个 V 就是实际被缓存的数据。为了将 JSON 字符串和 CacheValueHolder（包括了泛型字段 V ）进行互相转换，我在转换过程中使用 CacheValueHolder 和一个自定义的 JsonCacheObject 类，其代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JsonCacheObject</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String className;</span><br><span class="line">    <span class="keyword">private</span> V realObj;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">JsonCacheObject</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">JsonCacheObject</span><span class="params">(String className, V realObj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.className = className;</span><br><span class="line">        <span class="keyword">this</span>.realObj = realObj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ignore get and set methods</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后定义一个配置类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JetCacheConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(name = <span class="string">"jsonPolicy"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonSerializerPolicy <span class="title">jsonSerializerPolicy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> JsonSerializerPolicy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用很简单，比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Cached</span>( name = <span class="string">"user:"</span>, key = <span class="string">"#userId"</span>, serialPolicy = <span class="string">"bean:jsonPolicy"</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这种序列化方法是局部的，只能对单个缓存生效。</p>
+<p>下面介绍如何全局序列化方法。</p>
+<hr>
+<h4 id="3-3-2-全局配置-SpringConfigProvider"><a href="#3-3-2-全局配置-SpringConfigProvider" class="headerlink" title="3.3.2 全局配置 SpringConfigProvider"></a>3.3.2 全局配置 SpringConfigProvider</h4><p>JetCache 默认提供了两种序列化规则：KRYO 和 JAVA （不区分大小写）。</p>
+<p>这里在上面的 JSONSerialPolicy  的基础上，定义一个新的 SpringConfigProvider：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JetCacheConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SpringConfigProvider <span class="title">springConfigProvider</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SpringConfigProvider() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Function&lt;<span class="keyword">byte</span>[], Object&gt; parseValueDecoder(String valueDecoder) &#123;</span><br><span class="line">                <span class="keyword">if</span> (valueDecoder.equalsIgnoreCase(<span class="string">"myJson"</span>)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">new</span> JsonSerialPolicy().decoder();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.parseValueDecoder(valueDecoder);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Function&lt;Object, <span class="keyword">byte</span>[]&gt; parseValueEncoder(String valueEncoder) &#123;</span><br><span class="line">                <span class="keyword">if</span> (valueEncoder.equalsIgnoreCase(<span class="string">"myJson"</span>)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">new</span> JsonSerialPolicy().encoder();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.parseValueEncoder(valueEncoder);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这里使用了类型 <code>myJson</code> 作为新序列化类型的名称，这样我们就可以在配置文件的 <code>jetcache.xxx.valueEncoder</code> 和 <code>jetcache.xxx.valueDecoder</code> 这两个配置项上设置值 <code>myJson/java/kryo</code> 三者之一了。</p>
+<p>关于 Java 中缓存框架的知识就介绍到这里了，还有一些更加深入的知识，比如：如何保证分布式环境中缓存数据的一致性、缓存数据的刷新、多级缓存时定制化缓存策略等等。这些都留待以后再学习和介绍吧！</p>
+<hr>
+<p>参考资料：</p>
+<ul>
+<li><p>Spring Cache: <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#cache" target="_blank" rel="noopener">https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#cache</a></p>
+</li>
+<li><p>Caffeine 缓存: <a href="https://www.jianshu.com/p/9a80c662dac4" target="_blank" rel="noopener">https://www.jianshu.com/p/9a80c662dac4</a></p>
+</li>
+<li><p>Layering-Cache：<a href="https://github.com/xiaolyuh/layering-cache" target="_blank" rel="noopener">https://github.com/xiaolyuh/layering-cache</a></p>
+</li>
+<li><p>Alibaba JetCache: <a href="https://github.com/alibaba/jetcache" target="_blank" rel="noopener">https://github.com/alibaba/jetcache</a> </p>
+</li>
+<li><p>JetCache FAQ: <a href="https://github.com/alibaba/jetcache/wiki/FAQ_CN" target="_blank" rel="noopener">https://github.com/alibaba/jetcache/wiki/FAQ_CN</a></p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/uploads/javaapes.jpg" alt="eknown wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎扫一扫上面的微信公众号，第一时间订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/08/02-Spring%20AOP%E4%B8%8E%E4%BB%A3%E7%90%86/" rel="next" title="Spring AOP 与代理">
+                <i class="fa fa-chevron-left"></i> Spring AOP 与代理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/08/04-Java%20Thread/" rel="prev" title="Java 基础之 Thread">
+                Java 基础之 Thread <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">eknown</p>
+              <p class="site-description motion-element" itemprop="description">我与清风皆过客</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/laolunsi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://eknown.cn/" title="空夜's Blog" target="_blank">空夜's Blog</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Spring-Cache"><span class="nav-number">1.</span> <span class="nav-text">一、Spring Cache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Layering-Cache-框架"><span class="nav-number">2.</span> <span class="nav-text">二、Layering Cache 框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Alibaba-JetCache-框架"><span class="nav-number">3.</span> <span class="nav-text">三、Alibaba JetCache 框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-通过-CreateCache-创建-Cache-实例"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 通过 @CreateCache 创建 Cache 实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-通过注解实现方法缓存"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 通过注解实现方法缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-自定义序列化器"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 自定义序列化器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-实现-SerialPolicy-接口"><span class="nav-number">3.3.1.</span> <span class="nav-text">3.3.1 实现 SerialPolicy 接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-2-全局配置-SpringConfigProvider"><span class="nav-number">3.3.2.</span> <span class="nav-text">3.3.2 全局配置 SpringConfigProvider</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">eknown</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("44HlYzgCKimM8L4LEvP2Efue-gzGzoHsz", "vPbPmSOtHHap8f2JnCGtrTbG");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
