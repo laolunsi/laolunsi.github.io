@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.eknown.cn/spring-cloud-nacos-config.html</loc>
+    
+    <lastmod>2020-06-13T08:44:26.467Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.eknown.cn/spring-cloud-config-center.html</loc>
+    
+    <lastmod>2020-06-13T08:42:52.163Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.eknown.cn/about/index.html</loc>
     
     <lastmod>2020-06-13T08:17:19.536Z</lastmod>
