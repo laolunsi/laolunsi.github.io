@@ -82,7 +82,7 @@
 <meta name="description" content="本文介绍 Spring AOP 的原理，主要包括静态代理与动态代理、JDK 动态代理与 CGLIB 动态代理的内容，最后以两个 Spring AOP 的示例收尾。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring AOP 与代理">
-<meta property="og:url" content="http://yoursite.com/2020/06/08/02-Spring%20AOP%E4%B8%8E%E4%BB%A3%E7%90%86/index.html">
+<meta property="og:url" content="http://blog.eknown.cn/spring-aop%E4%B8%8E%E4%BB%A3%E7%90%86.html">
 <meta property="og:site_name" content="空夜&#39;s Blog">
 <meta property="og:description" content="本文介绍 Spring AOP 的原理，主要包括静态代理与动态代理、JDK 动态代理与 CGLIB 动态代理的内容，最后以两个 Spring AOP 的示例收尾。">
 <meta property="og:locale" content="en_US">
@@ -92,7 +92,7 @@
 <meta property="article:author" content="eknown">
 <meta property="article:tag" content="java ">
 <meta property="article:tag" content="spring ">
-<meta property="article:tag" content="springcloud">
+<meta property="article:tag" content="spring cloud">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://zfh-public-blog.oss-cn-beijing.aliyuncs.com/image-1590916137957.png">
 
@@ -124,7 +124,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/06/08/02-Spring AOP与代理/"/>
+  <link rel="canonical" href="http://blog.eknown.cn/spring-aop与代理.html"/>
 
 
 
@@ -175,7 +175,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle">welcome my site.</p>
+        <p class="site-subtitle">记录编程生活</p>
       
   </div>
 
@@ -196,7 +196,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/%20" rel="section">
+          <a href="/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -205,8 +205,38 @@
         </li>
       
         
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-archives">
-          <a href="/archives/%20" rel="section">
+          <a href="/archives/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -247,7 +277,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/08/02-Spring%20AOP%E4%B8%8E%E4%BB%A3%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="http://blog.eknown.cn/spring-aop%E4%B8%8E%E4%BB%A3%E7%90%86.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="eknown">
@@ -290,11 +320,21 @@
 
           
             
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/spring-aop%E4%B8%8E%E4%BB%A3%E7%90%86.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/spring-aop%E4%B8%8E%E4%BB%A3%E7%90%86.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
           
-             <span id="/2020/06/08/02-Spring%20AOP%E4%B8%8E%E4%BB%A3%E7%90%86/" class="leancloud_visitors" data-flag-title="Spring AOP 与代理">
+             <span id="/spring-aop%E4%B8%8E%E4%BB%A3%E7%90%86.html" class="leancloud_visitors" data-flag-title="Spring AOP 与代理">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -532,7 +572,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/24/01-ArrayList/" rel="next" title="ArrayList 源码分析">
+              <a href="/ArrayList.html" rel="next" title="ArrayList 源码分析">
                 <i class="fa fa-chevron-left"></i> ArrayList 源码分析
               </a>
             
@@ -542,7 +582,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/06/08/03-SpringBoot%20Cache/" rel="prev" title="SpringBoot Cache 技术实战">
+              <a href="/spring-boot-cache.html" rel="prev" title="SpringBoot Cache 技术实战">
                 SpringBoot Cache 技术实战 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -573,6 +613,9 @@
 
           
 
+  
+    <div class="comments" id="comments">
+    </div>
   
 
 
@@ -611,7 +654,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">eknown</p>
-              <p class="site-description motion-element" itemprop="description">我与清风皆过客</p>
+              <p class="site-description motion-element" itemprop="description">记录与分享 Java/Spring/SpringBoot 技术</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -619,16 +662,34 @@
             
               <div class="site-state-item site-state-posts">
               
-                <a href="/archives/%20%7C%7C%20archive">
+                <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
 
             
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
             
 
           </nav>
@@ -863,6 +924,28 @@
 
 
 
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '44HlYzgCKimM8L4LEvP2Efue-gzGzoHsz',
+        appKey: 'vPbPmSOtHHap8f2JnCGtrTbG',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
 
 
 
