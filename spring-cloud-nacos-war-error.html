@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo," />
+  <meta name="keywords" content="Spring Cloud," />
 
 
 
@@ -79,20 +79,18 @@
 
 
 
-<meta name="description" content="本文记录了博主在使用 hexo 搭建个人博客网站时的一些问题。包括文章编写、主题、评论插件、阅读数统计等等，后续会持续进行更新">
+<meta name="description" content="本文记录了在 SpringCloud 微服务项目中，使用 Nacos 作为注册中心，war 包部署项目出现的服务未注册问题的解决方案。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo 博客建站指南">
-<meta property="og:url" content="http://blog.eknown.cn/hexo%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%99%E6%8C%87%E5%8D%97.html">
+<meta property="og:title" content="SpringCloud War 包部署导致服务未注册到 Nacos 问题">
+<meta property="og:url" content="http://blog.eknown.cn/spring-cloud-nacos-war-error.html">
 <meta property="og:site_name" content="空夜&#39;s Blog">
-<meta property="og:description" content="本文记录了博主在使用 hexo 搭建个人博客网站时的一些问题。包括文章编写、主题、评论插件、阅读数统计等等，后续会持续进行更新">
+<meta property="og:description" content="本文记录了在 SpringCloud 微服务项目中，使用 Nacos 作为注册中心，war 包部署项目出现的服务未注册问题的解决方案。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://blog.eknown.cn/05-hexo%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%99%E6%8C%87%E5%8D%97.assets/image-20200613143048666.png">
-<meta property="article:published_time" content="2020-06-11T04:43:00.000Z">
-<meta property="article:modified_time" content="2020-06-13T23:34:20.311Z">
+<meta property="article:published_time" content="2019-12-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-06-13T23:39:15.712Z">
 <meta property="article:author" content="空夜">
-<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="Spring Cloud">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://blog.eknown.cn/05-hexo%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%99%E6%8C%87%E5%8D%97.assets/image-20200613143048666.png">
 
 
 
@@ -122,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://blog.eknown.cn/hexo博客建站指南.html"/>
+  <link rel="canonical" href="http://blog.eknown.cn/spring-cloud-nacos-war-error.html"/>
 
 
 
 
 
-  <title>hexo 博客建站指南 | 空夜's Blog</title>
+  <title>SpringCloud War 包部署导致服务未注册到 Nacos 问题 | 空夜's Blog</title>
   
 
 
@@ -275,7 +273,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.eknown.cn/hexo%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%99%E6%8C%87%E5%8D%97.html">
+    <link itemprop="mainEntityOfPage" href="http://blog.eknown.cn/spring-cloud-nacos-war-error.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="空夜">
@@ -292,7 +290,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">hexo 博客建站指南</h2>
+          <h2 class="post-title" itemprop="name headline">SpringCloud War 包部署导致服务未注册到 Nacos 问题</h2>
         
 
         <div class="post-meta">
@@ -304,8 +302,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-11T12:43:00+08:00">
-                2020-06-11
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-30T00:00:00+08:00">
+                2019-12-30
               </time>
             
 
@@ -327,8 +325,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hexo/" itemprop="url" rel="index">
-                    <span itemprop="name">Hexo</span>
+                  <a href="/categories/Spring-Cloud/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring Cloud</span>
                   </a>
                 </span>
 
@@ -345,8 +343,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/hexo%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%99%E6%8C%87%E5%8D%97.html#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/hexo%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%99%E6%8C%87%E5%8D%97.html" itemprop="commentCount"></span>
+                <a href="/spring-cloud-nacos-war-error.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/spring-cloud-nacos-war-error.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -354,7 +352,7 @@
 
           
           
-             <span id="/hexo%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%99%E6%8C%87%E5%8D%97.html" class="leancloud_visitors" data-flag-title="hexo 博客建站指南">
+             <span id="/spring-cloud-nacos-war-error.html" class="leancloud_visitors" data-flag-title="SpringCloud War 包部署导致服务未注册到 Nacos 问题">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -372,7 +370,7 @@
 
           
               <div class="post-description">
-                  本文记录了博主在使用 hexo 搭建个人博客网站时的一些问题。包括文章编写、主题、评论插件、阅读数统计等等，后续会持续进行更新
+                  本文记录了在 SpringCloud 微服务项目中，使用 Nacos 作为注册中心，war 包部署项目出现的服务未注册问题的解决方案。
               </div>
           
 
@@ -389,16 +387,28 @@
       
 
       
-        <h1 id="一、hexo-gitpages"><a href="#一、hexo-gitpages" class="headerlink" title="一、hexo + gitpages"></a>一、hexo + gitpages</h1><p>略</p>
-<hr>
-<h2 id="二、主题"><a href="#二、主题" class="headerlink" title="二、主题"></a>二、主题</h2><h3 id="next-主题"><a href="#next-主题" class="headerlink" title="next 主题"></a>next 主题</h3><h2 id="三、插件"><a href="#三、插件" class="headerlink" title="三、插件"></a>三、插件</h2><h3 id="valine-评论插件"><a href="#valine-评论插件" class="headerlink" title="valine 评论插件"></a>valine 评论插件</h3><hr>
-<h2 id="四、优化"><a href="#四、优化" class="headerlink" title="四、优化"></a>四、优化</h2><p>参考：</p>
-<p>HEXO SEO 高级优化：<a href="https://blog.csdn.net/lzy98/article/details/81140704" target="_blank" rel="noopener">https://blog.csdn.net/lzy98/article/details/81140704</a></p>
-<hr>
-<h2 id="四、一些问题"><a href="#四、一些问题" class="headerlink" title="四、一些问题"></a>四、一些问题</h2><h3 id="4-1-标签链接-Cannot-GET-20"><a href="#4-1-标签链接-Cannot-GET-20" class="headerlink" title="4.1 标签链接 Cannot GET /%20/"></a>4.1 标签链接 Cannot GET /%20/</h3><p>访问首页、标签等页面时，图标正常，但是出现了 <code>Cannot GET /%20/</code> 异常。</p>
-<p><img src="05-hexo%E5%8D%9A%E5%AE%A2%E5%BB%BA%E7%AB%99%E6%8C%87%E5%8D%97.assets/image-20200613143048666.png" alt="image-20200613143048666"></p>
-<p>知乎提问：<a href="https://www.zhihu.com/question/353097489" target="_blank" rel="noopener">https://www.zhihu.com/question/353097489</a></p>
+        <p>最近把一个 SpringBoot 项目接入了微服务，使用 SpringBoot 2.1.9.RELASE 和 SpringCloud Greewich.SR3 。本地测试都正常，但是上线后，出现了一个这样一个情况：</p>
+<p>日志未出现 <code>Nacos Registery</code> 类似的语句，也没有任何异常信息，就像是压根就没有配置微服务一样。</p>
+<p>检查了配置文件，正常</p>
+<p>本地测试，正常注册</p>
+<p>后来找组长帮忙看了一下，发现是 war 包部署的问题：</p>
+<p> SpringCloud 项目打 war 包部署时，也就是使用外部 Tomcat 部署，其启动命令、端口等是由外部容器 Tomcat 配置的，而 Nacos 或者其他服务注册方式需要当前项目的端口号用于注册微服务。</p>
+<p>以 Nacos 为例，其自动注册微服务的类是 NacosAutoServiceRegistration，我们看一下它的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosAutoServiceRegistration</span> <span class="keyword">extends</span> <span class="title">AbstractAutoServiceRegistration</span>&lt;<span class="title">Registration</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> NacosRegistration registration;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Deprecated</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPort</span><span class="params">(<span class="keyword">int</span> port)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.getPort().set(port);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> NacosRegistration <span class="title">getRegistration</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.registration.getPort() &lt; <span class="number">0</span> &amp;&amp; <span class="keyword">this</span>.getPort().get() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.registration.setPort(<span class="keyword">this</span>.getPort().get());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Assert.isTrue(<span class="keyword">this</span>.registration.getPort() &gt; <span class="number">0</span>, <span class="string">"service.port has not been set"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.registration;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
+
+
+<p>我们看到 NacosAutoServiceRegistration 使用了 this.registration.setPort(this.getPort().get()); 来设置端口号。</p>
+<p>而端口号是从其父类 AbstractAutoServiceRegistration 中的方法获取的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractAutoServiceRegistration</span>&lt;<span class="title">R</span> <span class="keyword">extends</span> <span class="title">Registration</span>&gt;</span></span><br><span class="line"><span class="class">		<span class="keyword">implements</span> <span class="title">AutoServiceRegistration</span>, <span class="title">ApplicationContextAware</span>,</span></span><br><span class="line"><span class="class">		<span class="title">ApplicationListener</span>&lt;<span class="title">WebServerInitializedEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> AtomicInteger port = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="meta">@Deprecated</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(WebServerInitializedEvent event)</span> </span>&#123;</span><br><span class="line">		ApplicationContext context = event.getApplicationContext();</span><br><span class="line">		<span class="keyword">if</span> (context <span class="keyword">instanceof</span> ConfigurableWebServerApplicationContext) &#123;</span><br><span class="line">			<span class="keyword">if</span> (<span class="string">"management"</span>.equals(((ConfigurableWebServerApplicationContext) context)</span><br><span class="line">					.getServerNamespace())) &#123;</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">this</span>.port.compareAndSet(<span class="number">0</span>, event.getWebServer().getPort());</span><br><span class="line">		<span class="keyword">this</span>.start();</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这段代码监听了内置容器启动完成事件，监听获取到容器端口后，向注册中心注册服务。</p>
+<p>因此，当使用外部容器时，如此处的 Tomcat 来部署项目，AbstractAutoServiceRegistration 就不能监听到容器启动事件了，也就不会尝试向服务注册中心注册当前这个微服务，那么注册就失败了，并且也就没有异常信息了。</p>
+<p>解决办法是自定义获取获取外部容器端口的方法， 然后监听应用启动事件，当应用被启动时，获取外部容器启动的端口号，然后将这个 port 设置到 NacosAutoServiceReigistration 中。</p>
+<p>下面是完整的解决方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.ApplicationArguments;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.ApplicationRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.alibaba.nacos.registry.NacosAutoServiceRegistration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.management.MBeanServer;</span><br><span class="line"><span class="keyword">import</span> javax.management.ObjectName;</span><br><span class="line"><span class="keyword">import</span> javax.management.Query;</span><br><span class="line"><span class="keyword">import</span> java.lang.management.ManagementFactory;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosConfig</span> <span class="keyword">implements</span> <span class="title">ApplicationRunner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span>(required = <span class="keyword">false</span>)</span><br><span class="line">    <span class="keyword">private</span> NacosAutoServiceRegistration registration;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;server.port&#125;"</span>)</span><br><span class="line">    Integer port;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(ApplicationArguments args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (registration != <span class="keyword">null</span> &amp;&amp; port != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Integer tomcatPort = port;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                tomcatPort = <span class="keyword">new</span> Integer(getTomcatPort());</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            registration.setPort(tomcatPort);</span><br><span class="line">            registration.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取外部tomcat端口</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTomcatPort</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();</span><br><span class="line">        Set&lt;ObjectName&gt; objectNames = beanServer.queryNames(<span class="keyword">new</span> ObjectName(<span class="string">"*:type=Connector,*"</span>), Query.match(Query.attr(<span class="string">"protocol"</span>), Query.value(<span class="string">"HTTP/1.1"</span>)));</span><br><span class="line">        String port = objectNames.iterator().next().getKeyProperty(<span class="string">"port"</span>);</span><br><span class="line">        <span class="keyword">return</span> port;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -423,7 +433,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+            <a href="/tags/Spring-Cloud/" rel="tag"># Spring Cloud</a>
           
         </div>
       
@@ -436,15 +446,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/spring-aop%E4%B8%8E%E4%BB%A3%E7%90%86.html" rel="next" title="Spring AOP 与代理">
-                <i class="fa fa-chevron-left"></i> Spring AOP 与代理
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/arrayList%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90.html" rel="prev" title="ArrayList 源码分析">
+                ArrayList 源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -499,17 +509,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -597,22 +598,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、hexo-gitpages"><span class="nav-number">1.</span> <span class="nav-text">一、hexo + gitpages</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二、主题"><span class="nav-number">1.1.</span> <span class="nav-text">二、主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#next-主题"><span class="nav-number">1.1.1.</span> <span class="nav-text">next 主题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、插件"><span class="nav-number">1.2.</span> <span class="nav-text">三、插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#valine-评论插件"><span class="nav-number">1.2.1.</span> <span class="nav-text">valine 评论插件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、优化"><span class="nav-number">1.3.</span> <span class="nav-text">四、优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、一些问题"><span class="nav-number">1.4.</span> <span class="nav-text">四、一些问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-标签链接-Cannot-GET-20"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 标签链接 Cannot GET &#x2F;%20&#x2F;</span></a></li></ol></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
